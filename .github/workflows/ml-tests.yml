@@ -1,0 +1,21 @@
+name: ML unit tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  synthetic-unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install test dependencies
+        run: python -m pip install numpy pandas scikit-learn xgboost joblib
+      - name: Run synthetic training-contract tests
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
