@@ -1,5 +1,8 @@
 # GeriatriCare
 
+[![Android CI](https://github.com/jetcingjacob2005/geriatriccare/actions/workflows/android-ci.yml/badge.svg)](https://github.com/jetcingjacob2005/geriatriccare/actions/workflows/android-ci.yml)
+[![ML unit tests](https://github.com/jetcingjacob2005/geriatriccare/actions/workflows/ml-tests.yml/badge.svg)](https://github.com/jetcingjacob2005/geriatriccare/actions/workflows/ml-tests.yml)
+
 **AI-Powered Wearable Health Monitoring and Risk Analysis System**
 
 GeriatriCare combines an ESP32 wearable sensor stream, an Android application, and an on-device screening model for elderly-care monitoring. The app displays heart rate, SpO2, body temperature, and a single-lead ECG waveform. Patient and doctor dashboards present readings and history. Screening is conditional on signal quality and a sufficient vital-sign window; it is not a medical diagnosis.
