@@ -1,38 +1,47 @@
-# GeriatriCare model training
+# GeriatriCare
 
-This directory builds an offline XGBoost screening model from VitalDB's public
-intra-operative data. It is not a medical diagnostic model and must not be
-presented as one.
+**AI-Powered Wearable Health Monitoring and Risk Analysis System**
 
-## Rebuild the dataset
+GeriatriCare combines an ESP32 wearable sensor stream, an Android application, and an on-device screening model for elderly-care monitoring. The app displays heart rate, SpO2, body temperature, and a single-lead ECG waveform. Patient and doctor dashboards present readings and history. Screening is conditional on signal quality and a sufficient vital-sign window; it is not a medical diagnosis.
 
-```powershell
-python build_vitaldb_dataset.py --workers 4
-```
+## Team
 
-The extractor resumes from `data/vitaldb_complete_features.checkpoint.jsonl`.
-It accepts only cases with validated HR, SpO2, body temperature, and ECG-II
-segments. The output includes case and subject identifiers so training can keep
-subjects separate between train, validation, and test sets.
+| Member | Roll number | GitHub | Responsibility |
+| --- | --- | --- | --- |
+| Abhinesh R | B23CS2105 | [Abhinesh-R](https://github.com/Abhinesh-R) | AI risk analysis and ML integration |
+| Abiya George | B23CS2108 | [Abiya48](https://github.com/Abiya48) | Doctor dashboard |
+| Arathy Krishna S B | B23CS2117 | [Arathy294](https://github.com/Arathy294) | Sensor monitoring and data visualization |
+| Jetcin G Jacob | B23CS2134 | [jetcingjacob2005](https://github.com/jetcingjacob2005) | Patient dashboard |
 
-## Train and evaluate
+These are project responsibilities. Git commit authorship and PR reviews must be read from GitHub records rather than inferred from this table.
 
-```powershell
-python train_xgboost_risk_model.py --data data/vitaldb_complete_features.csv --out assets/xgboost
-python verify_xgboost_export.py
-Copy-Item assets/xgboost/tabular_risk_tree_dump.json, assets/xgboost/tabular_risk_metrics.json ../app/src/main/assets/
-```
+## Repository layout
 
-The training script refuses to train if the feature cohort has fewer than 1,000
-cases or fewer than 100 positive labels. It uses a patient-level 60/20/20
-train/validation/test split, selects a validation threshold that prioritises
-sensitivity, and saves the final held-out metrics. The Android app evaluates
-the exported trees locally; it never retrains on startup.
+- `app/`: Kotlin Android application using Jetpack Compose, BLE, Firebase, Room, and Hilt.
+- `app/src/test/`: JUnit tests for BLE packets, ECG windows, screening, location, and explanations.
+- `geriatricare.ino`: ESP32 firmware snapshot from the original upload.
+- Root Python scripts: VitalDB feature extraction, XGBoost training/export, ECG CNN research, and verification.
+- `.github/workflows/`: repository and Android checks.
 
-## ECG limitation
+## Run the Android application
 
-VitalDB supplies ECG waveforms, but its checked outcome label is case-level
-death/ICU outcome, not a rhythm annotation. The tabular model therefore uses
-ECG-derived rate and RR-variability features. A 1D CNN must only be trained
-after acquiring waveform data with compatible rhythm labels and a subject-wise
-evaluation protocol.
+1. Install Android Studio with Android SDK 35 and JDK 17. Use Gradle 8.7, as specified in `gradle/wrapper/gradle-wrapper.properties`.
+2. Supply your own `app/google-services.json` from your Firebase project. This file is ignored by Git. For Maps, set `MAPS_API_KEY` in ignored `local.properties`.
+3. Open the repository in Android Studio, sync Gradle, and run the `app` configuration on Android 8.0 or later.
+4. Flash the ESP32 firmware and connect the wearable over BLE from the patient dashboard. The firmware and Android source must be validated together on the target hardware.
+
+The repository does not include Firebase credentials, signing keys, raw datasets, or trained model binaries. A development build can use a local Firebase configuration; the CI workflow writes a clearly fake configuration only to exercise compilation and unit tests.
+
+## Test and CI
+
+Android tests: `gradle testDebugUnitTest`. Debug build: `gradle assembleDebug`. The `Android CI` workflow runs both on pull requests when the source is present. The `Repository checks` workflow compiles the public Python scripts and verifies documentation files. Check the Actions page for actual run conclusions; a successful Python syntax check is not evidence of an Android build.
+
+## ML training and limitations
+
+The XGBoost screening model uses 30-minute summaries of heart rate, SpO2, temperature, ECG-derived rate, and RR variability. Build the complete VitalDB feature cohort with `python build_vitaldb_dataset.py --workers 4`, then train with `python train_xgboost_risk_model.py --data data/vitaldb_complete_features.csv --out assets/xgboost`. `python verify_xgboost_export.py` compares the portable tree evaluator with the native model when the private/generated artifacts are available. The training script requires at least 1,000 cases and 100 positive labels and uses patient-level train, validation, and test separation.
+
+An experimental 1D ECG CNN exists in the research scripts. Its status should not be confused with the Android app's current heuristic ECG timing path. The system is for screening and project validation, not clinical diagnosis.
+
+## Repository hygiene
+
+`.gitignore` excludes future local configuration, credentials, datasets, build outputs, and model artifacts. Ignore rules do not remove files already tracked in Git history. Review the earlier upload of `local.properties` and CSV files separately and rotate any exposed key if one was committed.

@@ -1,0 +1,16 @@
+{
+  "method": "exact_single_reference_shapley",
+  "units": "log_odds",
+  "reference_source": "Feature medians from the original training partition only",
+  "training_rows": 690,
+  "reference": {
+    "hr_mean": 72.17674255371094,
+    "hr_std": 7.365752458572388,
+    "spo2_mean": 98.66033172607422,
+    "spo2_std": 3.6765056848526,
+    "temp_mean": 35.61920928955078,
+    "temp_std": 0.6360538899898529,
+    "ecg_bpm": 108.07161591493075,
+    "ecg_rr_cv": 0.5037436044908639
+  }
+}

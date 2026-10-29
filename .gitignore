@@ -18,10 +18,10 @@ __pycache__/
 *.pyc
 
 # Large local datasets and model artifacts
-data/
-ml/data/
-artifacts/
-ml/assets/
+/data/
+/ml/data/
+/artifacts/
+/ml/assets/
 *.joblib
 *.tflite
 *.keras

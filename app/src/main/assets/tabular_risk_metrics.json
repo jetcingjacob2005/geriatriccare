@@ -1,0 +1,54 @@
+{
+  "dataset_rows": 1150,
+  "positive_rows": 199,
+  "split": "patient-level 60/20/20",
+  "threshold": 0.02829180285334587,
+  "roc_auc": 0.8627631578947368,
+  "average_precision": 0.620098609385716,
+  "sensitivity": 0.975,
+  "specificity": 0.3,
+  "confusion_matrix": {
+    "tn": 57,
+    "fp": 133,
+    "fn": 1,
+    "tp": 39
+  },
+  "classification_report": {
+    "0": {
+      "precision": 0.9827586206896551,
+      "recall": 0.3,
+      "f1-score": 0.4596774193548387,
+      "support": 190.0
+    },
+    "1": {
+      "precision": 0.22674418604651161,
+      "recall": 0.975,
+      "f1-score": 0.36792452830188677,
+      "support": 40.0
+    },
+    "accuracy": 0.41739130434782606,
+    "macro avg": {
+      "precision": 0.6047514033680834,
+      "recall": 0.6375,
+      "f1-score": 0.41380097382836273,
+      "support": 230.0
+    },
+    "weighted avg": {
+      "precision": 0.8512778494473694,
+      "recall": 0.41739130434782606,
+      "f1-score": 0.44372039482389053,
+      "support": 230.0
+    }
+  },
+  "feature_importance_gain": {
+    "hr_mean": 0.1375783532857895,
+    "hr_std": 0.14069432020187378,
+    "spo2_mean": 0.12727653980255127,
+    "spo2_std": 0.25062763690948486,
+    "temp_mean": 0.08788064867258072,
+    "temp_std": 0.08643924444913864,
+    "ecg_bpm": 0.0826914981007576,
+    "ecg_rr_cv": 0.08681172877550125
+  },
+  "data_note": "VitalDB intra-operative monitoring cohort; not a home-care diagnostic model."
+}
