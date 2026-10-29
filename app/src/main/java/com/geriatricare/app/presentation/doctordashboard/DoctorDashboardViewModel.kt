@@ -39,21 +39,7 @@ class DoctorDashboardViewModel @Inject constructor(
     // Filter to display ONLY patients who have booked an appointment with this doctor
     val bookedPatients: StateFlow<List<Patient>> =
         combine(patients, appointments) { allPatients, appts ->
-            val bookedPatientIds = appts.map { it.patientId }.filter { it.isNotBlank() }.toSet()
-            val existingBooked = allPatients.filter { it.id in bookedPatientIds }
-            val existingIds = existingBooked.map { it.id }.toSet()
-            val synthesized = appts
-                .filter { it.patientId.isNotBlank() && it.patientId !in existingIds }
-                .distinctBy { it.patientId }
-                .map { appt ->
-                    Patient(
-                        id = appt.patientId,
-                        name = appt.patientName.ifBlank { "Patient (${appt.patientId.take(4)})" },
-                        doctorName = appt.doctorName,
-                        hospitalName = appt.hospitalName
-                    )
-                }
-            existingBooked + synthesized
+            DoctorPatientSelection.bookedPatients(doctorId, allPatients, appts)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val prescriptions: StateFlow<List<Prescription>> =
