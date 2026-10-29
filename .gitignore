@@ -1,3 +1,27 @@
-# Default ignored files
+# Local configuration and credentials
+local.properties
+app/google-services.json
+*.jks
+*.keystore
+.env
+.env.*
+
+# Build and IDE output
+.gradle/
+.kotlin/
+**/build/
+.idea/
 /shelf/
 /workspace.xml
+*.iml
+__pycache__/
+*.pyc
+
+# Large local datasets and model artifacts
+data/
+ml/data/
+artifacts/
+ml/assets/
+*.joblib
+*.tflite
+*.keras
