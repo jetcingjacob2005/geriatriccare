@@ -60,6 +60,15 @@ class EcgDisplayWindowTest {
     @Test fun leadOffDropsOldDisplayImmediately() {
         assertEquals(listOf(-1f), EcgDisplayWindow.append(listOf(500f, 510f), -1f))
     }
+    @Test fun smoothingPreservesLeadOffGapAndDoesNotJoinSeparateTraces() {
+        val trace = listOf(700f, 700f, 700f, 900f, 700f, 700f, 700f, -1f,
+            300f, 300f, 300f, 300f, 300f)
+        val displayed = EcgDisplayWindow.smoothForDisplay(trace)
+        assertEquals(-1f, displayed[7], 0f)
+        assertEquals(300f, displayed[8], 0f)
+        assertEquals(300f, displayed.last(), 0f)
+        assertEquals(780f, displayed[3], 0.001f)
+    }
     @Test fun startupAndFullWindowHaveSameHorizontalSpeed() {
         val startup = EcgDisplayWindow.x(1, 2, 299f) - EcgDisplayWindow.x(0, 2, 299f)
         val full = EcgDisplayWindow.x(1, 300, 299f) - EcgDisplayWindow.x(0, 300, 299f)
