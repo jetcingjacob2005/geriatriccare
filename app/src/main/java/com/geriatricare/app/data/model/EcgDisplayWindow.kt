@@ -25,6 +25,22 @@ object EcgDisplayWindow {
      */
     fun smoothForDisplay(points: List<Float>, sampleRateHz: Int = 50): List<Float> {
         if (points.size < 5) return points
+        // A lead-off or corrupt ADC sample is a gap. Never smooth across it:
+        // blending the two sides could draw a wave where none was measured.
+        if (points.any { !it.isFinite() || it !in 0f..1023f }) {
+            val result = ArrayList<Float>(points.size)
+            var index = 0
+            while (index < points.size) {
+                if (!points[index].isFinite() || points[index] !in 0f..1023f) {
+                    result.add(points[index++])
+                    continue
+                }
+                val start = index
+                while (index < points.size && points[index].isFinite() && points[index] in 0f..1023f) index++
+                result.addAll(smoothForDisplay(points.subList(start, index), sampleRateHz))
+            }
+            return result
+        }
         val weights = intArrayOf(1, 2, 4, 2, 1)
         val smoothed = points.indices.map { index ->
             if (index < 2 || index > points.lastIndex - 2) {
