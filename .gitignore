@@ -11,6 +11,8 @@ app/google-services.json
 .kotlin/
 **/build/
 .idea/
+/shelf/
+/workspace.xml
 *.iml
 __pycache__/
 *.pyc
